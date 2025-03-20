@@ -1,8 +1,12 @@
 import React from "react";
+import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
 
 const Profile = () => (
-    <div style={{ padding: "20px" }}>
+<div>
+        <Header/>
         <h1>Profile</h1>
+        <BottomNav/>
     </div>
 );
 
