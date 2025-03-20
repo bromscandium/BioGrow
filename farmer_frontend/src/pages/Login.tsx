@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from "../components/Header";
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ const Login: React.FC = () => {
 
     return (
         <div style={styles.container}>
+            <Header />
             <div style={styles.card}>
                 <h1 style={styles.title}>Welcome Back</h1>
                 <input

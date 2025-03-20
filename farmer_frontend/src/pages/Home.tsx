@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Link} from 'react-router-dom';
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
+import ProjectCard from "../components/ProjectCard";
 
 const Home: React.FC = () => {
     const [userInfo] = useState({
@@ -37,6 +38,15 @@ const Home: React.FC = () => {
             waterNeeds: "Medium",
             soilHealth: 72,
             overall: "80",
+            lastUpdated: Date.now()
+        },
+        {
+            id: 4,
+            name: "Wheat Paddies",
+            status: "Moderate",
+            waterNeeds: "High",
+            soilHealth: 40,
+            overall: "88",
             lastUpdated: Date.now()
         },
     ];
@@ -110,55 +120,31 @@ const Home: React.FC = () => {
 
                 {/* User Info */}
                 <div style={styles.card}>
-                    <h3 style={styles.name}>{userInfo.name}</h3>
+                    <h3 style={styles.name}>👤{userInfo.name}</h3>
                     <p style={styles.sub}>Rank: {userInfo.rank} • {userInfo.points} pts</p>
-                    <p style={styles.sub}>{userInfo.location}</p>
+                    <p style={styles.sub}>📍{userInfo.location}</p>
                 </div>
 
                 {/* Projects */}
                 <section style={styles.section}>
                     <h4 style={styles.sectionTitle}>Your Projects</h4>
-                    {Projects.map((project) => (
-                        <Link
+                    {Projects.slice(0, 3).map((project) => (
+                        <ProjectCard
                             key={project.id}
-                            to={`/projects/${project.id}`}
-                            style={{textDecoration: 'none', color: 'inherit'}}
-                        >
-                            <div style={styles.card}>
-                                <div style={styles.badgeRow}>
-                <span style={{...styles.statusBadge, backgroundColor: getStatusColor(project.status)}}>
-                    {project.status}
-                                </span>
-                                </div>
-                                <h5 style={styles.cardTitle}>{project.name}</h5>
-                                <p style={styles.date}>Last
-                                    Updated: {new Date(project.lastUpdated).toLocaleDateString()}</p>
-                                <div style={styles.healthRow}>
-                                    <p style={styles.sub}>Health</p>
-                                    <p style={styles.numberOverall}>{project.overall}</p>
-                                </div>
-                                <div style={styles.barContainer}>
-                                    <div style={{
-                                        ...styles.bar,
-                                        width: `${project.overall}%`,
-                                        backgroundColor: getBarColor(project.overall)
-                                    }}/>
-                                </div>
-                                <div style={styles.statsRow}>
-                                    <p style={styles.sub}>💧 Water Needs: {project.waterNeeds}</p>
-                                    <p style={styles.sub}>🌱 Soil Health: {project.soilHealth}%</p>
-                                </div>
-                                <p style={styles.viewButton}>View Details ➜</p>
-                            </div>
-                        </Link>
+                            {...project}
+                            getStatusColor={getStatusColor}
+                            getBarColor={getBarColor}
+                        />
                     ))}
+                    <Link to="/projects" style={{textDecoration: 'none'}}>
+                        <p style={styles.viewButton}>Show more ➜</p>
+                    </Link>
                 </section>
 
                 {/* Weather Section */}
                 <section style={styles.section}>
                     <div style={styles.weatherHeader}>
                         <h4 style={styles.sectionTitle}>Weather Insights</h4>
-                        <span style={styles.badge}>{Weather.humidity}</span>
                     </div>
                     <div style={styles.weatherCard}>
                         <div style={styles.weatherMain}>
@@ -186,7 +172,7 @@ const Home: React.FC = () => {
                 <section style={styles.section}>
                     <h4 style={styles.sectionTitle}>Community Updates</h4>
                     {Community.map(update => (
-                        <div key={update.id} style={styles.card}>
+                        <div key={update.id} style={styles.cardCommunity}>
                             <h5 style={styles.cardTitle}>{update.headline}</h5>
                             <p>{update.summary}</p>
                             <p style={styles.date}>{update.date}</p>
@@ -216,12 +202,12 @@ const styles: { [key: string]: React.CSSProperties } = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '24px',
+        marginBottom: '20px',
     },
     greeting: {
         fontSize: '14px',
         color: '#666',
-        marginBottom: '4px',
+        marginBottom: '6px',
         fontFamily: 'Poppins, sans-serif',
     },
     username: {
@@ -230,99 +216,50 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#000',
         fontFamily: 'Poppins, sans-serif',
     },
-    temp: {
-        fontSize: '16px',
-        color: '#000',
-    },
     card: {
-        backgroundColor: '#fff',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: '16px',
         borderRadius: '12px',
-        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
         marginBottom: '16px',
+        backgroundColor: '#fff',
     },
     name: {
-        fontSize: '20px',
+        fontSize: '24px',
         fontWeight: 700,
         color: '#000',
         fontFamily: 'Poppins, sans-serif',
     },
     sub: {
-        fontSize: '14px',
+        marginBottom: '12px',
+        fontSize: '16px',
         color: '#666',
         fontFamily: 'Poppins, sans-serif',
     },
     section: {
-        marginBottom: '24px',
+        marginBottom: '20px',
     },
     sectionTitle: {
-        fontSize: '18px',
-        marginBottom: '12px',
+        fontSize: '22px',
+        marginBottom: '12px', // було 12px
+        marginLeft: '6px',
         fontFamily: 'Poppins, sans-serif',
     },
-    badgeRow: {
-        display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginBottom: '8px',
-    },
-    statusBadge: {
-        fontSize: '12px',
-        color: '#fff',
-        padding: '4px 8px',
-        borderRadius: '9999px',
-        fontFamily: 'Poppins, sans-serif',
-    },
-    cardTitle: {
-        fontSize: '16px',
-        fontWeight: 700,
-        marginBottom: '4px',
-        fontFamily: 'Poppins, sans-serif',
-    },
-    date: {
-        fontSize: '12px',
-        color: '#999',
-        fontFamily: 'Poppins, sans-serif',
-    },
-    healthRow: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '4px',
-    },
-    numberOverall: {
-        fontSize: '18px',
-        color: '#1F3A93',
-        fontWeight: 700,
-        fontFamily: 'Poppins, sans-serif',
-    },
-    barContainer: {
-        width: '100%',
-        height: '8px',
-        backgroundColor: '#E0E0E0',
-        borderRadius: '4px',
-        overflow: 'hidden',
-        marginBottom: '8px',
-    },
-    bar: {
-        height: '100%',
-        borderRadius: '4px',
-        transition: 'all 0.3s ease',
-    },
-    statsRow: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '8px',
-    },
+
+    // ProjectCard внутрішні елементи
+
     viewButton: {
-        marginTop: '8px',
+
         color: '#1F3A93',
         fontWeight: 600,
         textAlign: 'right',
         cursor: 'pointer',
         fontFamily: 'Poppins, sans-serif',
     },
+
     // Weather Section
     weatherHeader: {
         display: 'flex',
@@ -330,16 +267,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
         marginBottom: '8px',
     },
-    badge: {
-        backgroundColor: '#eee',
-        padding: '4px 12px',
-        borderRadius: '9999px',
-        fontSize: '12px',
-        color: '#555',
-        fontFamily: 'Poppins, sans-serif',
-    },
     weatherCard: {
-        padding: '16px',
+        padding: '14px',
         backgroundColor: '#fff',
         borderRadius: '12px',
         display: 'flex',
@@ -385,4 +314,20 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#1F3A93',
         fontFamily: 'Poppins, sans-serif',
     },
+    cardTitle: {
+        fontSize: '22px',
+        margin: '0px',
+        marginTop: '12px',
+    },
+    date: {
+        fontSize: '16px', color: '#999', fontFamily: 'Poppins, sans-serif'
+    },
+    cardCommunity: {
+        backgroundColor: '#fff',
+        padding: '14px',
+        borderRadius: '12px',
+        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+        marginBottom: '12px',
+    },
 };
+

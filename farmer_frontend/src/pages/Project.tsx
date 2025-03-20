@@ -2,12 +2,14 @@ import React from "react";
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
 
-const Project = () => (
-    <div>
-        <Header/>
-        <h1>Project</h1>
-        <BottomNav/>
-    </div>
-);
+const Project = () => {
+    return (
+        <div>
+            <Header/>
+            <h1>Project</h1>
+            <BottomNav/>
+        </div>
+    )
+};
 
 export default Project;
