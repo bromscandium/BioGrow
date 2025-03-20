@@ -90,14 +90,14 @@ class farmer_db:
             self.conn.rollback()
             raise e
 
-    def insert_users(self, name, role, longtitude, latitude, location, crops, additional_info):
+    def insert_users(self, role, longtitude, latitude, location, crops, additional_info):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    INSERT INTO public.users (name, role, longtitude, latitude, location, crops, additional_info)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO public.users (role, longtitude, latitude, location, crops, additional_info)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id;
-                ''', (name, role, longtitude, latitude, location, crops, additional_info))
+                ''', (role, longtitude, latitude, location, crops, additional_info))
                 new_id = cursor.fetchone()[0]
             self.conn.commit()
             return new_id
@@ -105,14 +105,14 @@ class farmer_db:
             self.conn.rollback()
             raise e
 
-    def update_users(self, id, name, role, longtitude, latitude, location, crops, additional_info):
+    def update_users(self, id, longtitude, latitude, location, crops, additional_info):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
                     UPDATE public.users
-                    SET name = %s, role = %s, longtitude = %s, latitude = %s, location = %s, crops = %s, additional_info = %s
+                    SET longtitude = %s, latitude = %s, location = %s, crops = %s, additional_info = %s
                     WHERE id = %s
-                ''', (name, role, longtitude, latitude, location, crops, additional_info, id))
+                ''', (longtitude, latitude, location, crops, additional_info, id))
             self.conn.commit()
             return cursor.rowcount > 0
         except Exception as e:

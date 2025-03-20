@@ -113,6 +113,14 @@ json_summary_plan_schema = {
                     "type": "string",
                     "description": "Which city or village is your farm closest to? (e.g., 'Punjab, India')"
                 },
+                "longtitude": {
+                    "type": "string",
+                    "description": "What's the longitude of your farm? (e.g., '75.3412')"
+                },
+                "latitude": {
+                    "type": "string",
+                    "description": "What's the latitude of your farm? (e.g., '31.5497')"
+                },
                 "crop": {
                     "type": "string",
                     "description": "Which crop are you planning to plant? (Rice, Wheat, Cotton, Other (specify))"
@@ -178,7 +186,7 @@ summary_prompt = (
     "Based on our conversation and the provided format, "
     "summarize all the information into a single JSON response. "
     "Your JSON output must conform exactly to the following schema: "
-    "keys include 'location', 'crop', 'crop_stage', 'planting_date_plan', "
+    "keys include 'location', 'longtitude', 'latitude', 'crop', 'crop_stage', 'planting_date_plan', "
     "'planted_date', 'harvest_date', 'planting_area', 'previous_crop', "
     "'irrigation_method', 'fertilizers', 'water_availability', "
     "'pest_disease_issues', 'pest_disease_control', 'biological_protection', and 'soil_info'. "

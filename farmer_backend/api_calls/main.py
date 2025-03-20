@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
-from process import (
+from api_calls.process import (
     compute_growth_efficiency,
     compute_water_efficiency,
     compute_rainfall_utilization,
@@ -29,16 +29,10 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 BASE_URL = os.getenv("BASE_URL", "https://services.cehub.syngenta-ais.com")
 
-# Example coordinates (you can update these as needed)
-longitude = 45
-latitude = 7
 
-endpoints = {
-    "short_range_forecast": {
+endpoint = {
         "path": "/api/Forecast/ShortRangeForecastHourly",
         "params": {
-            "latitude": latitude,
-            "longitude": longitude,
             "supplier": "Meteoblue",
             "top": "50",
             "format": "json",
@@ -95,8 +89,7 @@ endpoints = {
             ),
             "ApiKey": API_KEY
         }
-    },
-}
+    }
 
 def add_extra_data(sample_daily_data):
     extra_data = {
@@ -118,18 +111,19 @@ def add_extra_data(sample_daily_data):
     }
     return extra_data
 
-def fetch_all_data():
+def fetch_all_data(longitude, latitude):
     """Fetch data from endpoints, compute extra insights, and update the database."""
     results = {}
-    for key, endpoint in endpoints.items():
-        url = BASE_URL + endpoint["path"]
-        params = endpoint.get("params", {})
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            results[key] = response.json()
-        except Exception as e:
-            results[key] = None
+    url = BASE_URL + endpoint["path"]
+    params = endpoint.get("params", {})
+    params["longitude"] = longitude
+    params["latitude"] = latitude
+
+    try:
+        results = requests.get(url, params=params)
+        results.raise_for_status()
+    except Exception as e:
+        results = None
 
     # Compute extra insights based on the fetched data.
     extra_data = add_extra_data(results)
@@ -143,9 +137,11 @@ def fetch_all_data():
 
     return results
 
-def start_scheduler():
+def start_scheduler(longitude, latitude):
     """Run the scheduled job in a loop."""
-    schedule.every(1).hours.do(fetch_all_data)
+    schedule.every(1).hours.do(fetch_all_data, longitude, latitude)
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+

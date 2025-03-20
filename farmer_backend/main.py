@@ -109,12 +109,6 @@ async def get_user_info(person_id: str):
     user_info = my_farmer_db.get_user_by_id(person_id)
     return {"user_info": user_info}
 
-
-@app.get('/get_insights')
-async def get_recommendations():
-    insights = my_farmer_db.get_insights()
-    return {"insights": insights}
-
 @app.post("/add_to_community")
 async def add_to_community(item: CommunityPost):
     title = item.title
@@ -146,15 +140,10 @@ async def get_recommendations(id: uuid.UUID):
     conversation.append({"role": "system", "content": f'Here are the insights: {insights}'})
 
     # TODO add json schema in this call
-    
+
     insights = call_openai_api(conversation)
     return {"insights": insights}
 
-@app.lifespan("startup")
-async def startup_event():
-    # Launch the scheduler in a separate thread so it runs alongside your app.
-    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
-    scheduler_thread.start()
 
 @app.post("/add_data")
 async def add_data(
@@ -184,72 +173,93 @@ async def delete_data(item: FileItem):
     # result = farmer_db.
     return {"message": "Data deleted successfully"}
 
-
-
 @app.post('/personalized_plan')
-async def personalized_plan(answer: str):
-    conversation = []
-    for current_question in predefined_questions:
-        # Record the answer for the current question.
-        conversation.append({'role': 'system', 'content': current_question})
-        conversation.append({'role': 'user', 'content': answer})
+async def personalized_plan(answer: Optional[str] = None):
+    """
+    This endpoint receives an optional answer from the frontend.
+    If no answer is provided, it defaults to an empty string.
+    It iterates over all predefined questions, yielding each question back to the frontend.
+    Once all questions are processed, it appends a summary prompt, calls the OpenAI API,
+    parses the returned JSON, starts a background scheduler thread, and stores the data in the database.
+    """
+    # Default answer to empty string if not provided.
+    if answer is None:
+        answer = ""
     
-    # Append the summary prompt and the JSON schema.
-    conversation.append({'role': 'system', 'content': summary_prompt})
-    
-    # Call OpenAI API to get the response (assuming call_openai_api returns a JSON string)
-    openai_response = await call_openai_api(conversation, json_schema=json_summary_plan_schema)
-    
-    try:
-        # Parse the JSON response into a Python dictionary.
-        parsed_response = json.loads(openai_response)
-    except json.JSONDecodeError as e:
-        raise HTTPException(status_code=400, detail="Invalid JSON response from OpenAI API")
+    async def stream_response():
+        conversation = []
+        # Loop through all predefined questions.
+        for current_question in predefined_questions:
+            # Append the current question and the provided (or default) answer to the conversation.
+            conversation.append({'role': 'system', 'content': current_question})
+            conversation.append({'role': 'user', 'content': answer})
+            # Yield the current question to the frontend (as a JSON string).
+            yield json.dumps({"question": current_question}) + "\n"
+            await asyncio.sleep(0)  # Yield control to the event loop
 
-    # Now you can access fields from the parsed JSON data.
-    # For example:
-    location = parsed_response.get("location")
-    crop = parsed_response.get("crop")
-    crop_stage = parsed_response.get("crop_stage")
-    planting_date_plan = parsed_response.get("planting_date_plan")
-    planted_date = parsed_response.get("planted_date")
-    harvest_date = parsed_response.get("harvest_date")
-    planting_area = parsed_response.get("planting_area")
-    previous_crop = parsed_response.get("previous_crop")
-    irrigation_method = parsed_response.get("irrigation_method")
-    fertilizers = parsed_response.get("fertilizers")
-    water_availability = parsed_response.get("water_availability")
-    pest_disease_issues = parsed_response.get("pest_disease_issues")
-    pest_disease_control = parsed_response.get("pest_disease_control")
-    biological_protection = parsed_response.get("biological_protection")
-    soil_info = parsed_response.get("soil_info")
+        # After processing all questions, append the summary prompt.
+        conversation.append({'role': 'system', 'content': summary_prompt})
+        
+        # Call the OpenAI API to get the final structured answer.
+        openai_response = await call_openai_api(conversation, json_schema=json_summary_plan_schema)
+        try:
+            parsed_response = json.loads(openai_response)
+        except json.JSONDecodeError as e:
+            raise HTTPException(status_code=400, detail="Invalid JSON response from OpenAI API")
+        
+        # Extract needed fields from the parsed response.
+        location = parsed_response.get("location")
+        longitude = parsed_response.get("longitude")
+        latitude = parsed_response.get("latitude")
+        crop = parsed_response.get("crop")
+        crop_stage = parsed_response.get("crop_stage")
+        planting_date_plan = parsed_response.get("planting_date_plan")
+        planted_date = parsed_response.get("planted_date")
+        harvest_date = parsed_response.get("harvest_date")
+        planting_area = parsed_response.get("planting_area")
+        previous_crop = parsed_response.get("previous_crop")
+        irrigation_method = parsed_response.get("irrigation_method")
+        fertilizers = parsed_response.get("fertilizers")
+        water_availability = parsed_response.get("water_availability")
+        pest_disease_issues = parsed_response.get("pest_disease_issues")
+        pest_disease_control = parsed_response.get("pest_disease_control")
+        biological_protection = parsed_response.get("biological_protection")
+        soil_info = parsed_response.get("soil_info")
+        
+        # Start the background scheduler thread with the provided coordinates.
+        scheduler_thread = threading.Thread(
+            target=start_scheduler, args=(longitude, latitude), daemon=True
+        )
+        scheduler_thread.start()
+        
+        # Insert the structured data into the database.
+        new_id = my_farmer_db.insert_users(
+            longtitude=longitude,
+            latitude=latitude,
+            location=location,
+            crops=crop,
+            additional_info=json.dumps({
+                "crop_stage": crop_stage,
+                "planting_date_plan": planting_date_plan,
+                "planted_date": planted_date,
+                "harvest_date": harvest_date,
+                "planting_area": planting_area,
+                "previous_crop": previous_crop,
+                "irrigation_method": irrigation_method,
+                "fertilizers": fertilizers,
+                "water_availability": water_availability,
+                "pest_disease_issues": pest_disease_issues,
+                "pest_disease_control": pest_disease_control,
+                "biological_protection": biological_protection,
+                "soil_info": soil_info
+            })
+        )
+        
+        # Yield the final response to the frontend.
+        final_result = {"person_id": new_id, "data": parsed_response}
+        yield json.dumps(final_result) + "\n"
     
-    # Example: Insert the data into your database.
-    new_id = my_farmer_db.insert_users(
-        name=location,  # adjust this mapping as needed
-        role=crop,
-        longtitude=0.0,  # placeholder value, update accordingly
-        latitude=0.0,    # placeholder value, update accordingly
-        location=location,
-        crops=[crop],
-        additional_info=json.dumps({
-            "crop_stage": crop_stage,
-            "planting_date_plan": planting_date_plan,
-            "planted_date": planted_date,
-            "harvest_date": harvest_date,
-            "planting_area": planting_area,
-            "previous_crop": previous_crop,
-            "irrigation_method": irrigation_method,
-            "fertilizers": fertilizers,
-            "water_availability": water_availability,
-            "pest_disease_issues": pest_disease_issues,
-            "pest_disease_control": pest_disease_control,
-            "biological_protection": biological_protection,
-            "soil_info": soil_info
-        })
-    )
-    
-    return {"person_id": new_id, "data": parsed_response}
+    return StreamingResponse(stream_response(), media_type="application/json")
 
 async def _send_session_update(openai_ws: WebSocketClientProtocol) -> None:
     """Send the session update to the OpenAI WebSocket."""
