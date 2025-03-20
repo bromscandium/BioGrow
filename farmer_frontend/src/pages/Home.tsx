@@ -120,7 +120,7 @@ const Home: React.FC = () => {
 
                 {/* User Info */}
                 <div style={styles.card}>
-                    <h3 style={styles.name}>👤{userInfo.name}</h3>
+                    <h3 style={styles.name}>{userInfo.name}</h3>
                     <p style={styles.sub}>Rank: {userInfo.rank} • {userInfo.points} pts</p>
                     <p style={styles.sub}>📍{userInfo.location}</p>
                 </div>

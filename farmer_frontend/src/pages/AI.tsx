@@ -9,7 +9,6 @@ const AI = () => {
         {text: "Hello!", sender: "You", time: "10:00"},
         {text: "Hi there!", sender: "Bot", time: "10:01"}
     ]);
-    const chatAreaRef = React.useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const initialHeight = window.innerHeight;
@@ -44,17 +43,11 @@ const AI = () => {
         console.log("Voice input triggered");
     };
 
-    const handleClick = () => {
-        window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: "smooth",
-        });
-    };
 
     return (
         <div style={styles.container}>
             <Header/>
-            <div style={styles.chatArea} ref={chatAreaRef}>
+            <div style={styles.chatArea}>
                 {messages.map((message, index) => (
                     <div
                         key={index}
@@ -82,12 +75,14 @@ const AI = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type your message..."
-                    onClick={handleClick}
                 />
                 <button style={styles.voiceBtn} onClick={handleVoice}>
                     🎤
                 </button>
-                <button style={styles.sendBtn} onClick={handleSend}>
+                <button
+                    style={styles.sendBtn}
+                    onClick={handleSend}
+                >
                     ➤
                 </button>
             </div>
@@ -134,7 +129,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontFamily: "Poppins, sans-serif",
     },
     voiceBtn: {
-        padding: "12px",
+        padding: "15px",
         borderRadius: "50%",
         backgroundColor: "#eee",
         border: "none",
@@ -142,7 +137,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: "18px",
     },
     sendBtn: {
-        padding: "12px",
+        padding: "15px",
         borderRadius: "50%",
         backgroundColor: "#1F3A93",
         color: "#fff",
@@ -168,7 +163,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     messageFooter: {
         display: "flex",
         justifyContent: "space-between",
-        marginTop: "4px",
+        marginTop: "8px",
     },
     messageTime: {
         fontSize: "12px",
@@ -180,13 +175,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     userMessage: {
         backgroundColor: "#fff",
-        color: "#fff",
         alignSelf: "flex-end",
         marginLeft: 'auto'
     },
     otherMessage: {
         backgroundColor: "#f0f0f0",
-        color: "#333",
         alignSelf: "flex-start",
     },
 };
