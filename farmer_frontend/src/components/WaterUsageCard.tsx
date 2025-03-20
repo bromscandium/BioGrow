@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Pie, Bar} from 'react-chartjs-2';
+import {Doughnut, Bar} from 'react-chartjs-2';
 import {Chart, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend} from 'chart.js';
 
 Chart.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -65,10 +65,9 @@ const WaterUsageCard: React.FC<WaterOverviewProps> = ({waterSources, waterUsage}
                     </button>
                 ))}
             </div>
-            <h4 style={styles.chartHeader}>Water Usage (m³)</h4>
             <div style={styles.chartContainer}>
                 {activeTab === 'Sources' && (
-                    <Pie
+                    <Doughnut
                         data={pieData}
                         options={{
                             responsive: true,
@@ -148,6 +147,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: '#2e7d32',
         color: '#fff',
         border: '1px solid #2e7d32',
+        fontFamily: 'Poppins',
     },
     chartContainer: {
         padding: '12px',

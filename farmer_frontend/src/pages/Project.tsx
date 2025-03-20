@@ -1,11 +1,13 @@
 import React, {useState} from "react";
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
-import {Bar} from 'react-chartjs-2';
-import {Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend} from 'chart.js';
 import HealthCard from "../components/HealthCard";
 import InsightCard from "../components/InsightCard";
 import WaterUsageCard from "../components/WaterUsageCard";
+import StressLevelCard from "../components/StressLevelCard";
+import RecommendationCard from "../components/RecommendationCard";
+import FinancialOverviewCard from "../components/FinancialOverviewCard";
+import {Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend} from 'chart.js';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -90,6 +92,35 @@ const Project = () => {
         }
     };
 
+    const financialData = {
+        transactions: [
+            {icon: '📈', category: 'Estimated Profit', amount: 15000, unit: '₹', description: 'per acre'},
+            {icon: '🌾', category: 'Yield Expectation', amount: 1800, unit: 'kg', description: 'per acre'},
+            {icon: '💰', category: 'Expected Revenue', amount: 45000, unit: '₹', description: 'per acre'},
+            {icon: '💸', category: 'Total Cost', amount: 30000, unit: '₹', description: 'per acre'},
+            {icon: '📊', category: 'Price Trends', amount: 'Up 3%', unit: '', description: 'this month'},
+        ],
+        summaryData: {
+            labels: ['Seeds & Fertilizers', 'Irrigation Costs', 'Labor & Machinery', 'Electricity & Fuel', 'Protection'],
+            data: [20000, 20000, 50000, 80000, 80000],
+            colors: ['#66BB6A', '#42A5F5', '#FFA726', '#AB47BC', '#FF7043']
+        }
+    };
+
+    const recommendationData = {
+        header: {
+            icon: '🌿',
+            title: 'Stress Buster',
+            subtitle: 'Anti-Stress & Growth Activator',
+        },
+        description: 'A bio-stimulant that helps plants tolerate and recover from abiotic stress (cold, heat, drought, wounding), preserving yield.',
+        benefits: ['Reduces stress impact', 'Supports plant metabolism'],
+        link: {
+            text: 'Learn More',
+            url: 'https://www.syngenta.com/'
+        }
+    };
+
     return (
         <div style={styles.container}>
             <Header/>
@@ -134,12 +165,15 @@ const Project = () => {
                 {/*Stress level*/}
                 <section style={styles.section}>
                     <h3 style={styles.sectionTitle}>Heat Stress Levels</h3>
-                    <Bar data={dataStress} options={optionsStress}/>;
+                    <StressLevelCard
+                        data={dataStress}
+                        options={optionsStress}
+                    />
                 </section>
 
                 {/*Water usage*/}
                 <section style={styles.section}>
-                    <h3 style={styles.sectionTitle}>Water Usage</h3>
+                    <h3 style={styles.sectionTitle}>Water Usage (m³)</h3>
                     <WaterUsageCard
                         waterSources={waterData.waterSources}
                         waterUsage={waterData.waterUsage}
@@ -149,15 +183,18 @@ const Project = () => {
                 {/*Financial overview*/}
                 <section style={styles.section}>
                     <h3 style={styles.sectionTitle}>Financial Overview</h3>
-                    <div style={styles.financialCard}><span>💰 Estimated Profit</span><strong>₹15,000/acre</strong></div>
-                    <div style={styles.financialCard}><span>🌾 Yield Expectation</span><strong>1,800kg/acre</strong>
-                    </div>
+                    <FinancialOverviewCard
+                        transactions={financialData.transactions}
+                        summaryData={financialData.summaryData}
+                    />
                 </section>
 
                 {/*Biological Product Recommendations*/}
                 <section style={styles.section}>
                     <h3 style={styles.sectionTitle}>Biological Product Recommendations</h3>
-                    <div style={styles.card}>🛠️ Stress Buster: Helps resist heat & drought.</div>
+                    <RecommendationCard
+                        data={recommendationData}
+                    />
                 </section>
 
             </div>

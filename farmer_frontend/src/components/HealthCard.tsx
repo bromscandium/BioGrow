@@ -64,7 +64,7 @@ const HealthCard: React.FC<HealthCardProps> = ({
                         onClick={() => setIsPrivate(!isPrivate)}>
                         <div style={{
                             ...styles.toggleCircle,
-                            marginLeft: isPrivate ? '23px' : '2px'
+                            marginLeft: isPrivate ? '24px' : '2px'
                         }}></div>
                     </div>
                     <button
@@ -146,7 +146,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     statusBadge: {
         fontSize: 14,
         color: '#fff',
-        padding: '4px 8px',
+        padding: '8px 8px',
         borderRadius: 9999,
         fontWeight: 600,
         textTransform: 'capitalize',
@@ -157,7 +157,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: 14,
         color: '#333',
         backgroundColor: '#f0f0f0',
-        padding: '4px 8px',
+        padding: '8px 8px',
         borderRadius: 9999,
         fontWeight: 500,
         minWidth: 80,
