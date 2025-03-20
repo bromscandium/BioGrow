@@ -19,6 +19,37 @@ def compute_growth_efficiency(daily_data):
     return {"Growth Efficiency Score": round(score, 1), "Interpretation": interpretation}
 
 
+def aggregate_hourly_to_daily(hourly_data):
+    """
+    Convert a list of hourly data dictionaries into a single dictionary
+    by averaging the values for each measure label.
+    
+    Expects each item in hourly_data to have keys:
+      - 'measureLabel'
+      - 'value'
+    """
+    aggregated = {}
+    counts = {}
+    for entry in hourly_data:
+        label = entry.get('measureLabel', '').strip()
+        value_str = entry.get('value', '0')
+        try:
+            value = float(value_str)
+        except Exception:
+            value = 0.0
+        # Aggregate the values (summing and counting for average)
+        if label in aggregated:
+            aggregated[label] += value
+            counts[label] += 1
+        else:
+            aggregated[label] = value
+            counts[label] = 1
+    # Compute the average for each label
+    for label in aggregated:
+        aggregated[label] /= counts[label]
+    return aggregated
+
+
 def compute_water_efficiency(daily_data):
     """
     💧 Water Efficiency

@@ -22,3 +22,4 @@ soundfile
 websocket
 python-multipart
 schedule
+webrtcvad

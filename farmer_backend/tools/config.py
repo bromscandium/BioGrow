@@ -113,7 +113,7 @@ json_summary_plan_schema = {
                     "type": "string",
                     "description": "Which city or village is your farm closest to? (e.g., 'Punjab, India')"
                 },
-                "longtitude": {
+                "longitude": {
                     "type": "string",
                     "description": "What's the longitude of your farm? (e.g., '75.3412')"
                 },
@@ -182,33 +182,35 @@ json_summary_plan_schema = {
     }
 }
 
-summary_prompt = (
-    "Based on our conversation and the provided format, "
-    "summarize all the information into a single JSON response. "
-    "Your JSON output must conform exactly to the following schema: "
-    "keys include 'location', 'longtitude', 'latitude', 'crop', 'crop_stage', 'planting_date_plan', "
-    "'planted_date', 'harvest_date', 'planting_area', 'previous_crop', "
-    "'irrigation_method', 'fertilizers', 'water_availability', "
-    "'pest_disease_issues', 'pest_disease_control', 'biological_protection', and 'soil_info'. "
-    "Ensure the JSON is valid and follows the structure defined in the JSON schema."
-)
+summary_prompt = '''
+Based on our conversation and the provided format, 
+summarize all the information into a single JSON response. 
+Your JSON output must conform exactly to the following schema: 
+keys include 'location', 'longitude', 'latitude', 'crop', 'crop_stage', 'planting_date_plan', 
+'planted_date', 'harvest_date', 'planting_area', 'previous_crop', 
+'irrigation_method', 'fertilizers', 'water_availability', 
+'pest_disease_issues', 'pest_disease_control', 'biological_protection', and 'soil_info'. 
+Ensure the JSON is valid and follows the structure defined in the JSON schema.
+Put some dummy data if nothing provided
+'''
 # The following questions will be asked from the user:
 predefined_questions = [
+
     "Hello! I'm your personal farming companion. Let's build your personalized crop growth plan. Which city or village is your farm closest to?",
     "Great! Based on your location, which crop are you planning to plant?",
-    "At what stage are you currently with your crop?",
-    "When do you plan to plant? (Approximate or specific date)",
-    "When did you plant your crop? (Exact date preferred)",
-    "When do you expect to harvest your crop? (Approximate or specific date)",
-    "What's the approximate size of your planting area? (in acres)",
-    "Which crop did you plant previously on this land?",
-    "Which irrigation method are you currently using?",
-    "Are you currently using any fertilizers?",
-    "Do you typically experience water availability challenges?",
-    "Have you experienced pest or disease issues in past seasons?",
-    "What pest/disease control methods are you using now?",
-    "Are you familiar with biological protection products?",
-    "What kind of soil do you have on your farm (sandy, clay, black soil, or something else)? And is your land flat or hilly?"
+    # "At what stage are you currently with your crop?",
+    # "When do you plan to plant? (Approximate or specific date)",
+    # "When did you plant your crop? (Exact date preferred)",
+    # "When do you expect to harvest your crop? (Approximate or specific date)",
+    # "What's the approximate size of your planting area? (in acres)",
+    # "Which crop did you plant previously on this land?",
+    # "Which irrigation method are you currently using?",
+    # "Are you currently using any fertilizers?",
+    # "Do you typically experience water availability challenges?",
+    # "Have you experienced pest or disease issues in past seasons?",
+    # "What pest/disease control methods are you using now?",
+    # "Are you familiar with biological protection products?",
+    # "What kind of soil do you have on your farm (sandy, clay, black soil, or something else)? And is your land flat or hilly?"
 ]
 
 

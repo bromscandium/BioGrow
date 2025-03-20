@@ -35,11 +35,10 @@ class farmer_db:
                 ''')
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS public.users (
-                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        id UUID PRIMARY KEY,
                         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         "name" TEXT,
-                        "role" TEXT,
-                        "longtitude" FLOAT,
+                        "longitude" FLOAT,
                         "latitude" FLOAT,
                         "location" TEXT,
                         "crops" TEXT[],
@@ -48,7 +47,7 @@ class farmer_db:
                 ''')
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS public.conversations (
-                        id UUID PRIMARY KEY,
+                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         conversation JSONB
                     );
@@ -90,14 +89,14 @@ class farmer_db:
             self.conn.rollback()
             raise e
 
-    def insert_users(self, role, longtitude, latitude, location, crops, additional_info):
+    def insert_users(self, id ,longitude, latitude, location, crops, additional_info):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    INSERT INTO public.users (role, longtitude, latitude, location, crops, additional_info)
+                    INSERT INTO public.users (id, longitude, latitude, location, crops, additional_info)
                     VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id;
-                ''', (role, longtitude, latitude, location, crops, additional_info))
+                ''', (id, longitude, latitude, location, crops, additional_info))
                 new_id = cursor.fetchone()[0]
             self.conn.commit()
             return new_id
@@ -105,14 +104,15 @@ class farmer_db:
             self.conn.rollback()
             raise e
 
-    def update_users(self, id, longtitude, latitude, location, crops, additional_info):
+
+    def update_users(self, id, longitude, latitude, location, crops, additional_info):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
                     UPDATE public.users
-                    SET longtitude = %s, latitude = %s, location = %s, crops = %s, additional_info = %s
+                    SET longitude = %s, latitude = %s, location = %s, crops = %s, additional_info = %s
                     WHERE id = %s
-                ''', (longtitude, latitude, location, crops, additional_info, id))
+                ''', (longitude, latitude, location, crops, additional_info, id))
             self.conn.commit()
             return cursor.rowcount > 0
         except Exception as e:
@@ -141,15 +141,14 @@ class farmer_db:
             self.conn.rollback()
             raise e
 
-    def insert_chat_conversation(self, id ,conversation):
+    def insert_chat_conversation(self ,conversation):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    INSERT INTO public.conversations (id, conversation)
-                    VALUES (%s, %s)
-                               
+                    INSERT INTO public.conversations (conversation)
+                    VALUES (%s)
                     RETURNING id;
-                ''', (id, psycopg2.extras.Json(conversation)))
+                ''', (psycopg2.extras.Json(conversation),))
                 new_id = cursor.fetchone()[0]
             self.conn.commit()
             return new_id

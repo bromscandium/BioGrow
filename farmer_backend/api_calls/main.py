@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
+from tools import logger
 from api_calls.process import (
     compute_growth_efficiency,
     compute_water_efficiency,
@@ -21,7 +22,8 @@ from api_calls.process import (
     compute_pest_disease_alert,
     compute_frost_risk,
     compute_irrigation_risk,
-    compute_soil_protection_recommendations
+    compute_soil_protection_recommendations,
+    aggregate_hourly_to_daily
 )
 
 # Load environment variables
@@ -29,8 +31,8 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 BASE_URL = os.getenv("BASE_URL", "https://services.cehub.syngenta-ais.com")
 
-
-endpoint = {
+endpoints = {
+    "short_range_forecast": {
         "path": "/api/Forecast/ShortRangeForecastHourly",
         "params": {
             "supplier": "Meteoblue",
@@ -89,7 +91,8 @@ endpoint = {
             ),
             "ApiKey": API_KEY
         }
-    }
+    },
+}
 
 def add_extra_data(sample_daily_data):
     extra_data = {
@@ -111,37 +114,60 @@ def add_extra_data(sample_daily_data):
     }
     return extra_data
 
-def fetch_all_data(longitude, latitude):
+def fetch_all_data(id, longitude, latitude):
     """Fetch data from endpoints, compute extra insights, and update the database."""
     results = {}
-    url = BASE_URL + endpoint["path"]
-    params = endpoint.get("params", {})
-    params["longitude"] = longitude
-    params["latitude"] = latitude
+    # Loop over endpoints (even though it looks like you have one endpoint defined)
+    for key, endpoint in endpoints.items():
+        url = BASE_URL + endpoint["path"]
+        # Copy the default params and update with dynamic coordinates
+        params = endpoint.get("params", {}).copy()
+        params["longitude"] = longitude
+        params["latitude"] = latitude
+        
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            results[key] = response.json()
+        except Exception as e:
+            logger.error("Error fetching data from %s: %s", url, e)
+            results[key] = None
 
+    logger.info(f"Raw results: {results}")
+
+    # Ensure that you aggregate data from the correct key. For example, if your endpoint returns hourly data under key "short_range_forecast":
+    hourly_data = results.get("short_range_forecast", [])
+    aggregated_data = aggregate_hourly_to_daily(hourly_data)
+    
+    # Compute extra insights based on the aggregated data.
+    extra_data = add_extra_data(aggregated_data)
+    # Update the aggregated_data dictionary with the extra insights.
+    aggregated_data.update(extra_data)
+    
+    logger.info(f"Aggregated data with extra insights: {aggregated_data}")
+
+    # Update the database: update if data exists, otherwise insert new data.
     try:
-        results = requests.get(url, params=params)
-        results.raise_for_status()
+        if my_farmer_db.get_api_data_by_id(id):
+            my_farmer_db.update_api_data(id, aggregated_data)
+        else:
+            my_farmer_db.insert_api_data(id, aggregated_data)
     except Exception as e:
-        results = None
+        logger.error("Error updating/inserting data for id %s: %s", id, e)
+    
+    return aggregated_data
 
-    # Compute extra insights based on the fetched data.
-    extra_data = add_extra_data(results)
-    results.update(extra_data)
 
-    # Update the database: either update or insert the API data.
-    if my_farmer_db.get_api_data():
-        my_farmer_db.update_api_data(results)
-    else:
-        my_farmer_db.insert_api_data(results)
-
-    return results
-
-def start_scheduler(longitude, latitude):
+def start_scheduler(id, longitude, latitude):
     """Run the scheduled job in a loop."""
-    schedule.every(1).hours.do(fetch_all_data, longitude, latitude)
+    # For testing, run every 10 seconds (change back to 1 hour for production)
+    fetch_all_data(id, longitude, latitude)
+
+    schedule.every(1).hour.do(fetch_all_data, id, longitude, latitude)
+    logger.info("Scheduler started with id=%s, longitude=%s, latitude=%s", id, longitude, latitude)
     while True:
         schedule.run_pending()
         time.sleep(1)
+
 
 
