@@ -9,11 +9,12 @@ import asyncio
 from typing import Optional
 import base64
 import json
-import struct
 import soundfile as sf
 from websockets import WebSocketClientProtocol
 import websockets
 import uuid
+from api_calls import start_scheduler
+import threading
 
 app = FastAPI()
 
@@ -22,6 +23,7 @@ class Conversation(BaseModel):
     conversation_id: Optional[str] = None
     message: str
     context: str
+ 
 
 class FileItem(BaseModel):
     file_name: str
@@ -42,8 +44,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_headers=["*"],  
 )
-
-
 
 @app.post("/get_openai_answer")
 async def get_openai_answer(item: Conversation):
@@ -104,6 +104,17 @@ async def get_openai_answer(item: Conversation):
     }
 
 
+@app.post("/get_user_info")
+async def get_user_info(person_id: str):
+    user_info = my_farmer_db.get_user_by_id(person_id)
+    return {"user_info": user_info}
+
+
+@app.get('/get_insights')
+async def get_recommendations():
+    insights = my_farmer_db.get_insights()
+    return {"insights": insights}
+
 @app.post("/add_to_community")
 async def add_to_community(item: CommunityPost):
     title = item.title
@@ -126,12 +137,24 @@ async def get_community_posts():
     posts = my_farmer_db.get_all_community_posts()
     return {"posts": posts}
 
-@app.post("/get_ai_insights")
-async def get_ai_insights(person_id: str):
-    # build conversation based on person_id
-    conversation = None
-    insights = call_openai_api(conversation, json_schema=insights_json_schema)
+@app.get('/get_insights')
+async def get_recommendations(id: uuid.UUID):
+    # Optionally force an on-demand update:
+    # fetch_all_data()
+    insights = my_farmer_db.get_api_data_by_id(id)
+    conversation = [{"role": "system", "content": "You are a helpful assistant."}]
+    conversation.append({"role": "system", "content": f'Here are the insights: {insights}'})
+
+    # TODO add json schema in this call
+    
+    insights = call_openai_api(conversation)
     return {"insights": insights}
+
+@app.lifespan("startup")
+async def startup_event():
+    # Launch the scheduler in a separate thread so it runs alongside your app.
+    scheduler_thread = threading.Thread(target=start_scheduler, daemon=True)
+    scheduler_thread.start()
 
 @app.post("/add_data")
 async def add_data(
@@ -164,7 +187,7 @@ async def delete_data(item: FileItem):
 
 
 @app.post('/personalized_plan')
-async def personalized_plan():
+async def personalized_plan(answer: str):
     conversation = []
     for current_question in predefined_questions:
         # Record the answer for the current question.
@@ -226,7 +249,7 @@ async def personalized_plan():
         })
     )
     
-    return {"id": new_id, "data": parsed_response}
+    return {"person_id": new_id, "data": parsed_response}
 
 async def _send_session_update(openai_ws: WebSocketClientProtocol) -> None:
     """Send the session update to the OpenAI WebSocket."""

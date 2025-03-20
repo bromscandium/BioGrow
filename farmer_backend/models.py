@@ -43,12 +43,12 @@ class farmer_db:
                         "latitude" FLOAT,
                         "location" TEXT,
                         "crops" TEXT[],
-                        'additional_info' TEXT
+                        "additional_info" JSONB
                     );
                 ''')
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS public.conversations (
-                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        id UUID PRIMARY KEY,
                         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         conversation JSONB
                     );
@@ -56,20 +56,15 @@ class farmer_db:
 
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS public.api_data (
-                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        id UUID PRIMARY KEY,
                         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        "weather_forecast" TEXT,
-                        "heat_stress" TEXT,
-                        "soil_moisture" TEXT,
-                        "frost_prediction" TEXT,
-                        "hydric_stress" TEXT,
-                        "drone_flight_suggestions" TEXT
+                        "api_data" JSONB
                     );
                 ''')
 
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS public.community (
-                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        id UUID PRIMARY KEY,
                         "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         "title" TEXT,
                         "description" TEXT,
@@ -78,20 +73,6 @@ class farmer_db:
                         "comments" JSONB
                     );
                 ''')
-
-                cursor.execute('''
-    CREATE TABLE IF NOT EXISTS public.users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        "name" TEXT,
-        "role" TEXT,
-        "longtitude" FLOAT,
-        "latitude" FLOAT,
-        "location" TEXT,
-        "crops" TEXT[],
-        "additional_info" TEXT
-    );
-''')
 
             except Exception as e:
                 print("Error creating tables:", e)
@@ -160,14 +141,15 @@ class farmer_db:
             self.conn.rollback()
             raise e
 
-    def insert_chat_conversation(self, conversation):
+    def insert_chat_conversation(self, id ,conversation):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    INSERT INTO public.conversations (conversation)
-                    VALUES (%s)
+                    INSERT INTO public.conversations (id, conversation)
+                    VALUES (%s, %s)
+                               
                     RETURNING id;
-                ''', (psycopg2.extras.Json(conversation),))
+                ''', (id, psycopg2.extras.Json(conversation)))
                 new_id = cursor.fetchone()[0]
             self.conn.commit()
             return new_id
@@ -175,14 +157,14 @@ class farmer_db:
             self.conn.rollback()
             raise e
         
-    def insert_community(self, title, description, image, likes, comments):
+    def insert_community(self, id, title, description, image, likes, comments):
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    INSERT INTO public.community (title, description, image, likes, comments)
-                    VALUES (%s, %s, %s, %s, %s) 
+                    INSERT INTO public.community (id, title, description, image, likes, comments)
+                    VALUES (%s, %s, %s, %s, %s< %s) 
                     RETURNING id;
-                ''', (title, description, image, likes, psycopg2.extras.Json(comments)))
+                ''', (id, title, description, image, likes, psycopg2.extras.Json(comments)))
                 new_id = cursor.fetchone()[0]
             self.conn.commit()
             return new_id
@@ -267,25 +249,32 @@ class farmer_db:
             raise e
 
     def get_api_data(self):
+        """
+        Retrieve all API data records.
+        """
         self.conn.autocommit = True
         try:
             with self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT question_text FROM public.api_data")
+                cursor.execute("SELECT * FROM public.api_data")
                 rows = cursor.fetchall()
-                return [row["question_text"] for row in rows]
+                return [dict(row) for row in rows]
         except Exception as e:
             self.conn.rollback()
             raise e
-        
-    def insert_api_data(self, weather_forecast, heat_stress, soil_moisture, frost_prediction, hydric_stress, drone_flight_suggestions):
+
+    def insert_api_data(self, id, api_data):
+        """
+        Insert a new API data record with the provided values.
+        """
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    INSERT INTO public.api_data (weather_forecast, heat_stress, soil_moisture, frost_prediction, hydric_stress, drone_flight_suggestions)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO public.api_data (id, 
+                        api_data
+                    )
+                    VALUES (%s, %s)
                     RETURNING id;
-                ''', (weather_forecast, heat_stress, soil_moisture, frost_prediction, hydric_stress, drone_flight_suggestions))
-
+                ''', (id, psycopg2.extras.Json(api_data)))
                 new_id = cursor.fetchone()[0]
             self.conn.commit()
             return new_id
@@ -294,30 +283,39 @@ class farmer_db:
             raise e
 
     def get_api_data_by_id(self, id):
+        """
+        Retrieve a single API data record by its ID.
+        """
         try:
             with self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT question_text FROM public.api_data WHERE id = %s", (id,))
+                cursor.execute("SELECT * FROM public.api_data WHERE id = %s", (id,))
                 row = cursor.fetchone()
-                return row["question_text"] if row else None
+                return dict(row) if row else None
         except Exception as e:
             self.conn.rollback()
             raise e
 
-
-    def update_api_data(self, weather_forecast, heat_stress, soil_moisture, frost_prediction, hydric_stress, drone_flight_suggestions):
+    def update_api_data(self, id, api_data):
+        """
+        Update an existing API data record identified by its ID.
+        """
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
                     UPDATE public.api_data
-                    SET weather_forecast = %s, heat_stress = %s, soil_moisture = %s, frost_prediction = %s, hydric_stress = %s, drone_flight_suggestions = %s
+                    SET api_data = %s
                     WHERE id = %s
-                ''', (weather_forecast, heat_stress, soil_moisture, frost_prediction, hydric_stress, drone_flight_suggestions))
+                ''', (psycopg2.extras.Json(api_data), id))
             self.conn.commit()
+            return cursor.rowcount > 0
         except Exception as e:
             self.conn.rollback()
             raise e
 
     def delete_api_data_by_id(self, id):
+        """
+        Delete an API data record by its ID.
+        """
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute("DELETE FROM public.api_data WHERE id = %s", (id,))
@@ -326,7 +324,6 @@ class farmer_db:
         except Exception as e:
             self.conn.rollback()
             raise e
-
 
 db_params = {
     "dbname": os.getenv("POSTGRES_DB"),

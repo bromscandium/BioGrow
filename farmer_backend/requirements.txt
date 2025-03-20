@@ -21,3 +21,4 @@ websockets
 soundfile
 websocket
 python-multipart
+schedule
