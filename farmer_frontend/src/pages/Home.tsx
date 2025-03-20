@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {Link} from 'react-router-dom';
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
 
@@ -69,10 +70,10 @@ const Home: React.FC = () => {
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 6) return "Good night,";
-        if (hour < 12) return "Good morning,";
-        if (hour < 18) return "Good afternoon,";
-        return "Good evening,";
+        if (hour < 6) return "🌙 Good night,";
+        if (hour < 12) return "☀️ Good morning,";
+        if (hour < 18) return "🌤️️ Good afternoon,";
+        return "🌕 Good evening,";
     };
 
     const getBarColor = (value: string) => {
@@ -102,10 +103,9 @@ const Home: React.FC = () => {
                 {/* Hello Info */}
                 <div style={styles.helloContainer}>
                     <div>
-                        <p style={styles.greeting}>{getGreeting()}</p>
-                        <h2 style={styles.username}>{userInfo.name}</h2>
+                        <p style={{...styles.greeting, marginTop: '8px'}}>{getGreeting()}</p>
+                        <h2 style={{...styles.username, marginTop: '-4px', marginBottom: '-4px'}}>{userInfo.name}</h2>
                     </div>
-                    <p style={styles.temp}>{Weather.temp}</p>
                 </div>
 
                 {/* User Info */}
@@ -119,28 +119,38 @@ const Home: React.FC = () => {
                 <section style={styles.section}>
                     <h4 style={styles.sectionTitle}>Your Projects</h4>
                     {Projects.map((project) => (
-                        <div key={project.id} style={styles.card}>
-                            <div style={styles.badgeRow}>
-                                <span style={{...styles.statusBadge, backgroundColor: getStatusColor(project.status)}}>
-                                    {project.status}
+                        <Link
+                            key={project.id}
+                            to={`/projects/${project.id}`}
+                            style={{textDecoration: 'none', color: 'inherit'}}
+                        >
+                            <div style={styles.card}>
+                                <div style={styles.badgeRow}>
+                <span style={{...styles.statusBadge, backgroundColor: getStatusColor(project.status)}}>
+                    {project.status}
                                 </span>
+                                </div>
+                                <h5 style={styles.cardTitle}>{project.name}</h5>
+                                <p style={styles.date}>Last
+                                    Updated: {new Date(project.lastUpdated).toLocaleDateString()}</p>
+                                <div style={styles.healthRow}>
+                                    <p style={styles.sub}>Health</p>
+                                    <p style={styles.numberOverall}>{project.overall}</p>
+                                </div>
+                                <div style={styles.barContainer}>
+                                    <div style={{
+                                        ...styles.bar,
+                                        width: `${project.overall}%`,
+                                        backgroundColor: getBarColor(project.overall)
+                                    }}/>
+                                </div>
+                                <div style={styles.statsRow}>
+                                    <p style={styles.sub}>💧 Water Needs: {project.waterNeeds}</p>
+                                    <p style={styles.sub}>🌱 Soil Health: {project.soilHealth}%</p>
+                                </div>
+                                <p style={styles.viewButton}>View Details ➜</p>
                             </div>
-                            <h5 style={styles.cardTitle}>{project.name}</h5>
-                            <p style={styles.date}>Last
-                                Updated: {new Date(project.lastUpdated).toLocaleDateString()}</p>
-                            <div style={styles.healthRow}>
-                                <p style={styles.sub}>Health</p>
-                                <p style={styles.numberOverall}>{project.overall}</p>
-                            </div>
-                            <div style={styles.barContainer}>
-                                <div style={{ ...styles.bar, width: `${project.overall}%`, backgroundColor: getBarColor(project.overall) }} />
-                            </div>
-                            <div style={styles.statsRow}>
-                                <p style={styles.sub}>Water Needs: {project.waterNeeds}</p>
-                                <p style={styles.sub}>Soil Health: {project.soilHealth}%</p>
-                            </div>
-                            <p style={styles.viewButton}>View Details ➜</p>
-                        </div>
+                        </Link>
                     ))}
                 </section>
 
@@ -167,7 +177,7 @@ const Home: React.FC = () => {
                             <p>🌧 10% chance of rain</p>
                         </div>
                         <div style={styles.tip}>
-                            <p style={styles.tipText}>{Weather.tip}</p>
+                            <p style={styles.tipText}>💡{Weather.tip}</p>
                         </div>
                     </div>
                 </section>
