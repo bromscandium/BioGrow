@@ -1,49 +1,83 @@
-import React, { useState } from "react";
+import React, {useState, useEffect} from "react";
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
 
 const AI = () => {
-    const [messages, setMessages] = useState([
-        { id: 1, sender: "bot", text: "Hello! How can I assist you today?" }
-    ]);
     const [input, setInput] = useState("");
+    const [bottomOffset, setBottomOffset] = useState(64);
+    const [messages, setMessages] = useState([
+        { text: "Hello!", sender: "You" },
+        { text: "Hi there!", sender: "Other User" }
+    ]);
+
+    useEffect(() => {
+        const initialHeight = window.innerHeight;
+
+        const handleResize = () => {
+            const heightDiff = initialHeight - window.innerHeight;
+            if (heightDiff > 150) {
+                setBottomOffset(heightDiff);
+            } else {
+                setBottomOffset(64);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const handleSend = () => {
         if (input.trim() === "") return;
-        setMessages([...messages, { id: Date.now(), sender: "user", text: input }]);
+        console.log("Send message:", input);
+        setMessages([...messages, { text: input, sender: "You" }]);
         setInput("");
+    };
+
+
+    const handleVoice = () => {
+        console.log("Voice input triggered");
     };
 
     return (
         <div style={styles.container}>
-            <Header />
-            <div style={styles.chatContainer}>
-                <div style={styles.messages}>
-                    {messages.map((msg) => (
-                        <div
-                            key={msg.id}
-                            style={{
-                                ...styles.message,
-                                alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                                backgroundColor: msg.sender === "user" ? "#1F3A93" : "#E5E5EA",
-                                color: msg.sender === "user" ? "#fff" : "#000",
-                            }}
-                        >
-                            {msg.text}
-                        </div>
-                    ))}
-                </div>
-                <div style={styles.inputContainer}>
-                    <input
-                        style={styles.input}
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Type your message..."
-                    />
-                    <button style={styles.button} onClick={handleSend}>Send</button>
-                </div>
+            <Header/>
+            <div style={styles.chatArea}></div>
+            <div style={styles.chatArea}>
+                {messages.map((message, index) => (
+                    <div
+                        key={index}
+                        style={{
+                            ...styles.chatMessage,
+                            ...(message.sender === "You" ? styles.userMessage : styles.otherMessage)
+                        }}
+                    >
+                        <div style={styles.messageText}>{message.text}</div>
+                        <div style={styles.messageSender}>{message.sender}</div>
+                    </div>
+                ))}
             </div>
-            <BottomNav />
+            <div
+                style={{
+                    ...styles.inputWrapper,
+                    bottom: `${bottomOffset}px`,
+                }}
+            >
+                <input
+                    style={styles.input}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Type your message..."
+                />
+                <button style={styles.voiceBtn} onClick={handleVoice}>
+                    🎤
+                </button>
+                <button style={styles.sendBtn} onClick={handleSend}>
+                    ➤
+                </button>
+            </div>
+
+            <BottomNav/>
         </div>
     );
 };
@@ -56,48 +90,80 @@ const styles: { [key: string]: React.CSSProperties } = {
         flexDirection: "column",
         minHeight: "100vh",
         backgroundColor: "#f5f5f5",
-    },
-    chatContainer: {
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        padding: "16px",
         paddingBottom: "80px",
     },
-    messages: {
+    chatArea: {
         flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
+        padding: "16px",
         overflowY: "auto",
-        marginBottom: "16px",
     },
-    message: {
-        maxWidth: "70%",
-        padding: "10px 14px",
-        borderRadius: "16px",
-        fontFamily: "Poppins, sans-serif",
-        fontSize: "14px",
-    },
-    inputContainer: {
+    inputWrapper: {
+        position: "fixed",
+        left: "0",
+        right: "0",
+        padding: "12px 16px",
+        backgroundColor: "#fff",
+        borderTop: "1px solid #ddd",
         display: "flex",
         gap: "8px",
+        zIndex: 15,
+        transition: "bottom 0.3s ease-in-out",
     },
+
     input: {
         flex: 1,
-        padding: "12px",
+        padding: "12px 16px",
         borderRadius: "9999px",
         border: "1px solid #ccc",
-        fontFamily: "Poppins, sans-serif",
         fontSize: "14px",
+        fontFamily: "Poppins, sans-serif",
     },
-    button: {
-        padding: "12px 20px",
+    voiceBtn: {
+        padding: "12px",
+        borderRadius: "50%",
+        backgroundColor: "#eee",
+        border: "none",
+        cursor: "pointer",
+        fontSize: "18px",
+    },
+    sendBtn: {
+        padding: "12px",
+        borderRadius: "50%",
         backgroundColor: "#1F3A93",
         color: "#fff",
         border: "none",
-        borderRadius: "9999px",
         cursor: "pointer",
-        fontFamily: "Poppins, sans-serif",
+        fontSize: "18px",
+    },
+    chatMessage: {
+        display: "flex",
+        flexDirection: "column",
+        padding: "10px 16px",
+        backgroundColor: "#fff",
+        borderRadius: "12px",
+        marginBottom: "12px",
+        maxWidth: "70%",
+        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+    },
+    messageText: {
+        fontSize: "14px",
+        color: "#333",
+        lineHeight: "1.4",
+    },
+    messageSender: {
+        fontSize: "12px",
+        color: "#888",
+        textAlign: "right",
+        marginTop: "4px",
+    },
+    userMessage: {
+        backgroundColor: "#1F3A93",
+        color: "#fff",
+        alignSelf: "flex-end",
+    },
+    otherMessage: {
+        backgroundColor: "#f0f0f0",
+        color: "#333",
+        alignSelf: "flex-start",
     },
 };
