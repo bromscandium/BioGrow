@@ -157,13 +157,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         marginTop: "4px",
     },
     userMessage: {
-        backgroundColor: "#1F3A93",
+        backgroundColor: "#fff",
         color: "#fff",
         alignSelf: "flex-end",
     },
     otherMessage: {
         backgroundColor: "#f0f0f0",
-        color: "#333",
+        color: "#fff",
         alignSelf: "flex-start",
     },
 };
