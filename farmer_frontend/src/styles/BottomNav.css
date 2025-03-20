@@ -1,0 +1,51 @@
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0;
+    background: white;
+    border-top: 1px solid #ddd;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    filter: grayscale(100%);
+}
+
+.active-icon {
+    filter: none;
+}
+
+.label {
+    font-size: 10px;
+    color: #888;
+    font-family: 'Poppins', sans-serif;
+}
+
+.active-label {
+    color: #1F3A93;
+    font-weight: 600;
+}
+
+.underline {
+    position: absolute;
+    bottom: -6px;
+    width: 80%;
+    height: 2px;
+    background: #1F3A93;
+    border-radius: 2px;
+}
