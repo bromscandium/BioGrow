@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LoginPage: React.FC = () => {
+const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default Login;
 
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
