@@ -6,6 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
+node_modules/
+
 .env
 venv/
 
@@ -71,6 +73,8 @@ instance/
 # Scrapy stuff:
 .scrapy
 
+# Node.js
+
 # Sphinx documentation
 docs/_build/
 
@@ -120,6 +124,7 @@ ipython_config.py
 .pdm-python
 .pdm-build/
 
+
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
 
@@ -138,6 +143,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+package-lock.json
 
 # Spyder project settings
 .spyderproject
