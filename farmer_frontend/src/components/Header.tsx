@@ -5,7 +5,7 @@ const Header: React.FC = () => {
     return (
         <header className="header-container">
             <div className="header">
-                <h1 className="logo">BioGrow 🌿</h1>
+                <h1 className="logo">Valli</h1>
             </div>
         </header>
     );

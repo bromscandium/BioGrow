@@ -42,12 +42,14 @@ const WaterUsageCard: React.FC<WaterOverviewProps> = ({waterSources, waterUsage}
                 data: waterUsage.current,
                 backgroundColor: waterUsage.colors.current,
                 borderRadius: 12,
+                barThickness: 32,
             },
             {
                 label: 'Estimated',
                 data: waterUsage.estimated,
                 backgroundColor: waterUsage.colors.estimated,
                 borderRadius: 12,
+                barThickness: 32,
             }
         ]
     };
@@ -67,42 +69,80 @@ const WaterUsageCard: React.FC<WaterOverviewProps> = ({waterSources, waterUsage}
             </div>
             <div style={styles.chartContainer}>
                 {activeTab === 'Sources' && (
-                    <Doughnut
-                        data={pieData}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        generateLabels: (chart) => {
-                                            const dataset = chart.data.datasets[0];
-                                            const bg = dataset.backgroundColor as string[];
-                                            return chart.data.labels?.map((label, i) => ({
-                                                text: `${label}: ${dataset.data[i]} m³`,
-                                                fillStyle: bg[i],
-                                                strokeStyle: bg[i],
-                                                index: i
-                                            })) || [];
+                    <div style={{ height: 300 }}>
+                        <Doughnut
+                            data={pieData}
+                            options={{
+                                maintainAspectRatio: false,
+                                animation: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            font: {
+                                                family: 'Poppins',
+                                                size: 16
+                                            },
+                                            generateLabels: (chart) => {
+                                                const dataset = chart.data.datasets[0];
+                                                const bg = dataset.backgroundColor as string[];
+                                                return chart.data.labels?.map((label, i) => ({
+                                                    text: `${label}: ${dataset.data[i]} m³`,
+                                                    fillStyle: bg[i],
+                                                    strokeStyle: bg[i],
+                                                    index: i
+                                                })) || [];
+                                            }
                                         }
-                                    }
-                                },
-                                tooltip: {enabled: false}
-                            }
-                        }}
-                    />
+                                    },
+                                    tooltip: {enabled: false}
+                                }
+                            }}
+                        />
+                    </div>
                 )}
 
                 {activeTab === 'Usage' && (
-                    <Bar
-                        data={barData}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {position: 'bottom'}
-                            }
-                        }}
-                    />
+                    <div style={{ height: 300 }}>
+                        <Bar
+                            data={barData}
+                            options={{
+                                maintainAspectRatio: false,
+                                animation: false,
+                                interaction: { mode: undefined },
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            font: {
+                                                family: 'Poppins',
+                                                size: 16
+                                            }
+                                        }
+                                    },
+                                    tooltip: { enabled: false },
+                                },
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                family: 'Poppins',
+                                                size: 16
+                                            }
+                                        }
+                                    },
+                                    y: {
+                                        ticks: {
+                                            font: {
+                                                family: 'Poppins',
+                                                size: 16
+                                            }
+                                        }
+                                    }
+                                }
+                            }}
+                        />
+                    </div>
                 )}
             </div>
         </div>
@@ -118,13 +158,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: 12,
         boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     },
-    chartHeader: {
-        fontSize: 18,
-        fontWeight: 700,
-        fontFamily: 'Poppins',
-        marginBottom: 12,
-        color: '#000',
-    },
     tabContainer: {
         display: 'flex',
         marginBottom: 12,
@@ -139,8 +172,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: '#fff',
         fontWeight: 600,
         fontFamily: 'Poppins',
-        fontSize: 15,
-        transition: 'all 0.3s ease',
+        fontSize: '18px',
+        transition: 'none',
         color: '#000',
     },
     activeTab: {
@@ -151,5 +184,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     chartContainer: {
         padding: '12px',
+        minHeight: 300
     },
 };

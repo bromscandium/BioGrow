@@ -18,13 +18,40 @@ interface StressLevelProps {
 const StressLevelCard: React.FC<StressLevelProps> = ({ data, options }) => {
     return (
         <div style={styles.card}>
-            <Bar data={data} options={{
-                ...options,
-                plugins: {
-                    ...options.plugins,
-                    legend: { display: false }
-                }
-            }} />
+            <div style={styles.chartWrapper}>
+                <Bar
+                    data={data}
+                    options={{
+                        ...options,
+                        plugins: {
+                            ...options.plugins,
+                            legend: { display: false },
+
+                        },
+                        interaction: { mode: undefined },
+                        animation: false,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Poppins',
+                                        size: 16
+                                    }
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    font: {
+                                        family: 'Poppins',
+                                        size: 16
+                                    }
+                                }
+                            }
+                        }
+                    }}
+                />
+            </div>
             <div style={styles.customLegend}>
                 {data.labels.map((label, i) => (
                     <div key={i} style={styles.legendItem}>
@@ -46,23 +73,22 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: 12,
         boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
         marginBottom: 16,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 700,
-        marginBottom: 12,
         fontFamily: 'Poppins',
-        color: '#000',
+    },
+    chartWrapper: {
+        height: 300,
     },
     customLegend: {
         marginTop: 12,
         display: 'flex',
         gap: 16,
+        fontFamily: 'Poppins',
     },
     legendItem: {
         display: 'flex',
         alignItems: 'center',
         gap: 6,
+        fontFamily: 'Poppins',
     },
     legendDot: {
         width: 12,
@@ -70,8 +96,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: '50%',
     },
     legendLabel: {
-        fontSize: 14,
-        color: '#333',
+        fontSize: 16,
+        color: '#000',
         fontFamily: 'Poppins'
     }
 };

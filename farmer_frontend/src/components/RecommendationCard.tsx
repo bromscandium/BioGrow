@@ -1,7 +1,7 @@
 import React from "react";
 
 interface RecommendationProps {
-    header: { icon: string; title: string; subtitle: string };
+    header: { title: string; subtitle: string };
     description: string;
     benefits: string[];
     link: { text: string; url: string };
@@ -11,7 +11,6 @@ const RecommendationCard: React.FC<{ data: RecommendationProps }> = ({data}) => 
     return (
         <div style={styles.card}>
             <div style={styles.headerRow}>
-                <span style={styles.icon}>{data.header.icon}</span>
                 <div>
                     <h4 style={styles.title}>{data.header.title}</h4>
                     <p style={styles.subtitle}>{data.header.subtitle}</p>
@@ -40,11 +39,10 @@ const styles: { [key: string]: React.CSSProperties } = {
         boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
     },
     header: {display: 'flex', alignItems: 'center', marginBottom: 12},
-    icon: {fontSize: 20, marginRight: 8},
-    title: {fontSize: 18, fontWeight: 700, fontFamily: 'Poppins'},
-    subtitle: {fontSize: 14, fontWeight: 600, marginBottom: 8, fontFamily: 'Poppins',},
-    description: {fontSize: 14, marginBottom: 12, color: '#ddd', fontFamily: 'Poppins',},
-    benefitsTitle: {fontSize: 14, fontWeight: 600, marginBottom: 8, fontFamily: 'Poppins',},
+    title: {fontSize: 24, fontWeight: 700, fontFamily: 'Poppins'},
+    subtitle: {fontSize: 20, fontWeight: 600, marginBottom: 8, fontFamily: 'Poppins',},
+    description: {fontSize: 16, marginBottom: 12, color: '#ddd', fontFamily: 'Poppins',},
+    benefitsTitle: {fontSize: 20, fontWeight: 600, marginBottom: 8, fontFamily: 'Poppins',},
     benefitList: {
         listStyle: 'none',
         padding: 0,
@@ -54,13 +52,16 @@ const styles: { [key: string]: React.CSSProperties } = {
         gap: 6,
         fontFamily: 'Poppins'
     },
-    benefitItem: {fontSize: 14, fontFamily: 'Poppins',},
+    benefitItem: {
+        fontSize: 18, fontFamily: 'Poppins'
+    },
     link: {
+        fontSize: 18,
         marginTop: 12,
         display: 'inline-block',
         color: '#4CAF50',
         fontWeight: 600,
-        textDecoration: 'none',
+
         fontFamily: 'Poppins',
     }
 };

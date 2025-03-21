@@ -1,85 +1,157 @@
 import React from "react";
-import {Link} from "react-router-dom";
 
-interface ProjectProps {
-    id: number;
+interface ProjectCardProps {
     name: string;
     status: string;
+    location: string;
     waterNeeds: string;
     soilHealth: number;
-    overall: string;
-    lastUpdated: number;
-    getStatusColor: (status: string) => string;
-    getBarColor: (value: string) => string;
+    frostRisk: string;
+    lastUpdated: Date;
+    newInsights: number;
 }
 
-const ProjectCard: React.FC<ProjectProps> = ({
-                                                 id,
-                                                 name,
-                                                 status,
-                                                 waterNeeds,
-                                                 soilHealth,
-                                                 overall,
-                                                 lastUpdated,
-                                                 getStatusColor,
-                                                 getBarColor
-                                             }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({
+                                                     name,
+                                                     status,
+                                                     location,
+                                                     waterNeeds,
+                                                     soilHealth,
+                                                     frostRisk,
+                                                     lastUpdated,
+                                                     newInsights,
+                                                 }) => {
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "Good":
+                return "#00A651";
+            case "Moderate":
+                return "#FFC107";
+            case "Needs Attention":
+                return "#FF3B30";
+            default:
+                return "#888";
+        }
+    };
+
     return (
-        <Link to={`/projects/${id}`} style={{textDecoration: 'none', color: 'inherit'}}>
-            <div style={card}>
-                <div style={badgeRow}>
-                    <span style={{...statusBadge, backgroundColor: getStatusColor(status)}}>{status}</span>
-                </div>
-                <h5 style={cardTitle}>{name}</h5>
-                <p style={date}>Last Updated: {new Date(lastUpdated).toLocaleDateString()}</p>
-                <div style={healthRow}>
-                    <p style={sub}>Health</p>
-                    <p style={numberOverall}>{overall}</p>
-                </div>
-                <div style={barContainer}>
-                    <div style={{...bar, width: `${overall}%`, backgroundColor: getBarColor(overall)}}/>
-                </div>
-                <div style={statsRow}>
-                    <p style={sub}>💧 Water Needs: {waterNeeds}</p>
-                    <p style={sub}>🌱 Soil Health: {soilHealth}%</p>
-                </div>
-                <p style={viewButton}>View Details ➜</p>
+        <div style={styles.card}>
+            <div style={styles.inlineBadgesRow}>
+                <span style={{...styles.statusBadge, backgroundColor: getStatusColor(status)}}>{status}</span>
+                <span style={styles.locationBadge}>📍{location}</span>
+                <span style={styles.insightsBadge}>{newInsights} new insights</span>
             </div>
-        </Link>
+
+            <h5 style={styles.cardTitle}>{name}</h5>
+
+            <div style={styles.statsContainer}>
+                <div style={styles.metricBox}>
+                    <span style={styles.metricLabel}>Frost Risk</span>
+                    <span style={styles.metricValue}>{frostRisk}</span>
+                </div>
+                <div style={styles.metricBox}>
+                    <span style={styles.metricLabel}>Water Needs</span>
+                    <span style={styles.metricValue}>{waterNeeds}</span>
+                </div>
+                <div style={styles.metricBox}>
+                    <span style={styles.metricLabel}>Soil Health</span>
+                    <span style={styles.metricValue}>{soilHealth}%</span>
+                </div>
+            </div>
+
+            <div style={styles.footerRow}>
+                <span style={styles.lastUpdated}>Last Updated: {lastUpdated.toLocaleDateString()}</span>
+            </div>
+        </div>
     );
 };
 
 export default ProjectCard;
 
-
-const card = {
-    backgroundColor: '#fff',
-    padding: '16px',
-    borderRadius: '12px',
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
-    marginBottom: '16px',
-};
-const badgeRow = {display: 'flex', justifyContent: 'flex-start', marginBottom: '-20px'};
-const statusBadge = {fontSize: '14px', color: '#fff', padding: '4px 8px', borderRadius: '9999px'};
-const cardTitle = {fontSize: '24px', fontWeight: 700, marginBottom: '-10px', fontFamily: 'Poppins, sans-serif'};
-const date = {fontSize: '16px', color: '#999', fontFamily: 'Poppins, sans-serif'};
-const healthRow = {display: 'flex', justifyContent: 'space-between', alignItems: 'center'};
-const numberOverall = {fontSize: '20px', color: '#1F3A93', fontWeight: 700, fontFamily: 'Poppins, sans-serif'};
-const barContainer = {
-    width: '100%',
-    height: '8px',
-    backgroundColor: '#E0E0E0',
-    borderRadius: '4px',
-    overflow: 'hidden',
-    marginBottom: '8px'
-};
-const bar = {height: '100%', borderRadius: '4px', transition: 'all 0.3s ease'};
-const statsRow = {display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px'};
-const sub = {fontSize: '15px', color: '#666', fontFamily: 'Poppins, sans-serif'};
-const viewButton = {
-    color: '#1F3A93',
-    fontWeight: 600,
-    textAlign: 'right' as const,
-    cursor: 'pointer',
-    fontFamily: 'Poppins, sans-serif',
+const styles: { [key: string]: React.CSSProperties } = {
+    card: {
+        backgroundColor: '#fff',
+        padding: 16,
+        borderRadius: 12,
+        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+        marginBottom: 16,
+        fontFamily: 'Poppins, sans-serif',
+    },
+    inlineBadgesRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    cardTitle: {
+        fontSize: 24,
+        fontWeight: 700,
+        fontFamily: 'Poppins, sans-serif',
+        marginBottom: 12,
+    },
+    locationBadge: {
+        fontSize: 18,
+        color: '#333',
+        padding: '8px 0px',
+        borderRadius: 9999,
+        fontWeight: 500,
+        minWidth: 80,
+        textAlign: 'center',
+    },
+    statusBadge: {
+        fontSize: 18,
+        color: '#fff',
+        padding: '8px 12px',
+        borderRadius: 9999,
+        fontWeight: 600,
+        textTransform: 'capitalize',
+        minWidth: 80,
+        textAlign: 'center',
+    },
+    insightsBadge: {
+        fontSize: 18,
+        color: '#fff',
+        backgroundColor: '1F3A93',
+        padding: '8px 12px',
+        borderRadius: 9999,
+        fontWeight: 600,
+        textTransform: 'capitalize',
+        minWidth: 80,
+        textAlign: 'center',
+    },
+    statsContainer: {
+        display: 'flex',
+        gap: 14,
+        marginBottom: 14,
+    },
+    metricBox: {
+        padding: 14,
+        flex: 1,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        textAlign: 'center',
+        fontFamily: 'Poppins, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+    },
+    metricLabel: {
+        fontSize: 16,
+        color: '#555',
+        fontWeight: 500,
+    },
+    metricValue: {
+        fontSize: 20,
+        fontWeight: 600,
+        color: '#1F3A93',
+    },
+    footerRow: {
+        marginTop: 12,
+    },
+    lastUpdated: {
+        marginTop: 12,
+        fontSize: 18,
+        color: '#888',
+        fontFamily: 'Poppins, sans-serif',
+    },
 };

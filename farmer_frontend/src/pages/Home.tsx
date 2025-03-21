@@ -17,39 +17,49 @@ const Home: React.FC = () => {
             id: 1,
             name: "Wheat Field",
             status: "Good",
+            location: "New Delhi",
+            frostRisk: "Low",
             waterNeeds: "Medium",
             soilHealth: 80,
-            overall: "92",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 3,
         },
         {
             id: 2,
             name: "Corn Farm",
             status: "Needs Attention",
+            location: "Mumbai",
+            frostRisk: "High",
             waterNeeds: "High",
             soilHealth: 65,
-            overall: "68",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 1,
         },
         {
             id: 3,
             name: "Rice Paddies",
             status: "Moderate",
+            location: "Hyderabad",
+            frostRisk: "Moderate",
             waterNeeds: "Medium",
             soilHealth: 72,
-            overall: "80",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 0,
         },
         {
             id: 4,
             name: "Wheat Paddies",
             status: "Moderate",
+            location: "Chennai",
+            frostRisk: "Low",
             waterNeeds: "High",
             soilHealth: 40,
-            overall: "88",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 5,
         },
     ];
+
+
     const Weather = {
         temp: "29°C",
         rain: "10%",
@@ -78,50 +88,13 @@ const Home: React.FC = () => {
         },
     ];
 
-    const getGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour < 6) return "🌙 Good night,";
-        if (hour < 12) return "☀️ Good morning,";
-        if (hour < 18) return "🌤️️ Good afternoon,";
-        return "🌕 Good evening,";
-    };
-
-    const getBarColor = (value: string) => {
-        const num = parseInt(value, 10);
-        if (num >= 80) return "#00A651";
-        if (num >= 60) return "#FFC107";
-        return "#FF3B30";
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "Good":
-                return "#00A651";
-            case "Moderate":
-                return "#FFC107";
-            case "Needs Attention":
-                return "#FF3B30";
-            default:
-                return "#888";
-        }
-    };
-
     return (
         <div style={styles.container}>
             <Header/>
             <div style={styles.scrollContent}>
-                {/* Hello Info */}
-                <div style={styles.helloContainer}>
-                    <div>
-                        <p style={{...styles.greeting, marginTop: '8px'}}>{getGreeting()}</p>
-                        <h2 style={{...styles.username, marginTop: '-4px', marginBottom: '-4px'}}>{userInfo.name}</h2>
-                    </div>
-                </div>
-
                 {/* User Info */}
                 <div style={styles.card}>
-                    <h3 style={styles.name}>👤{userInfo.name}</h3>
-                    <p style={styles.sub}>Rank: {userInfo.rank} • {userInfo.points} pts</p>
+                    <h3 style={styles.name}>{userInfo.name}</h3>
                     <p style={styles.sub}>📍{userInfo.location}</p>
                 </div>
 
@@ -132,8 +105,6 @@ const Home: React.FC = () => {
                         <ProjectCard
                             key={project.id}
                             {...project}
-                            getStatusColor={getStatusColor}
-                            getBarColor={getBarColor}
                         />
                     ))}
                     <Link to="/projects" style={{textDecoration: 'none'}}>

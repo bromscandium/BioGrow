@@ -54,7 +54,6 @@ const FinancialOverviewCard: React.FC<FinancialOverviewProps> = ({transactions, 
                                 <span>{tx.icon}</span>
                                 <div style={styles.meta}>
                                     <span style={styles.category}>{tx.category}</span>
-                                    {tx.description && <small style={styles.description}>{tx.description}</small>}
                                 </div>
                             </div>
                             <div style={styles.right}>
@@ -67,34 +66,43 @@ const FinancialOverviewCard: React.FC<FinancialOverviewProps> = ({transactions, 
             )}
 
             {activeTab === 'Cost Breakdown' && (
-                <Doughnut
-                    data={pieData}
-                    options={{
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    generateLabels: (chart) => {
-                                        const data = chart.data;
-                                        const dataset = data.datasets?.[0];
-                                        const values = dataset?.data as number[] | undefined;
-                                        const backgroundColors = dataset?.backgroundColor as string[] | undefined;
+                <div style={{ height: 359 }}>
+                    <Doughnut
+                        data={pieData}
+                        options={{
+                            maintainAspectRatio: false,
+                            animation: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        font: {
+                                            family: 'Poppins',
+                                            size: 16
+                                        },
+                                        generateLabels: (chart) => {
+                                            const data = chart.data;
+                                            const dataset = data.datasets?.[0];
+                                            const values = dataset?.data as number[] | undefined;
+                                            const backgroundColors = dataset?.backgroundColor as string[] | undefined;
 
-                                        if (!data.labels || !values || !backgroundColors) return [];
+                                            if (!data.labels || !values || !backgroundColors) return [];
 
-                                        return data.labels.map((label, i) => ({
-                                            text: `${label}: ₹${values[i].toLocaleString()}`,
-                                            fillStyle: backgroundColors[i],
-                                            strokeStyle: backgroundColors[i],
-                                            fontFamily: 'Poppins',
-                                            index: i
-                                        }));
+                                            return data.labels.map((label, i) => ({
+                                                text: `${label}: ₹${values[i].toLocaleString()}`,
+                                                fillStyle: backgroundColors[i],
+                                                strokeStyle: backgroundColors[i],
+                                                fontFamily: 'Poppins',
+                                                index: i
+                                            }));
+                                        }
                                     }
-                                }
+                                },
+                                tooltip: { enabled: false }
                             }
-                        }
-                    }}
-                />
+                        }}
+                    />
+                </div>
             )}
         </div>
     );
@@ -109,8 +117,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: 12,
         boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     },
-    tabContainer: {display: 'flex', gap: 8, marginBottom: 12,
-        fontFamily: 'Poppins',},
+    tabContainer: {display: 'flex', gap: 8, marginBottom: 12, fontFamily: 'Poppins'},
     tab: {
         flex: 1,
         padding: '10px 0',
@@ -120,7 +127,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         background: '#fff',
         fontWeight: 600,
         fontFamily: 'Poppins',
-        fontSize: 15
+        fontSize: 18
     },
     activeTab: {
         backgroundColor: '#2e7d32',
@@ -128,8 +135,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         border: '1px solid #2e7d32',
         fontFamily: 'Poppins',
     },
-    list: {display: 'flex', flexDirection: 'column', gap: 12,
-        fontFamily: 'Poppins',},
+    list: {display: 'flex', flexDirection: 'column', gap: 12, fontFamily: 'Poppins'},
     item: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -138,22 +144,14 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderBottom: '1px solid #eee',
         fontFamily: 'Poppins',
     },
-    left: {display: 'flex', alignItems: 'center', gap: 12,
-        fontFamily: 'Poppins',},
-    meta: {display: 'flex', flexDirection: 'column',
-        fontFamily: 'Poppins',},
+    left: {display: 'flex', alignItems: 'center', gap: 12, fontFamily: 'Poppins'},
+    meta: {display: 'flex', flexDirection: 'column', fontFamily: 'Poppins'},
     category: {
-        fontWeight: 600, fontSize: 15,
-        fontFamily: 'Poppins',
+        fontWeight: 600, fontSize: 18, fontFamily: 'Poppins',
     },
-    description: {
-        fontSize: 12, color: '#777',
-        fontFamily: 'Poppins',
-    },
-    right: {textAlign: 'right',
-        fontFamily: 'Poppins',},
+    right: {textAlign: 'right', fontFamily: 'Poppins', fontSize: 18 },
     unit: {
-        display: 'block', fontSize: 10, color: '#888',
+        display: 'block', fontSize: 12, color: '#000',
         fontFamily: 'Poppins',
     },
 };

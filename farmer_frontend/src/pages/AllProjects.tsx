@@ -9,59 +9,47 @@ const AllProjects: React.FC = () => {
             id: 1,
             name: "Wheat Field",
             status: "Good",
+            location: "New Delhi",
+            frostRisk: "Low",
             waterNeeds: "Medium",
             soilHealth: 80,
-            overall: "92",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 3,
         },
         {
             id: 2,
             name: "Corn Farm",
             status: "Needs Attention",
+            location: "Mumbai",
+            frostRisk: "High",
             waterNeeds: "High",
             soilHealth: 65,
-            overall: "68",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 1,
         },
         {
             id: 3,
             name: "Rice Paddies",
             status: "Moderate",
+            location: "Hyderabad",
+            frostRisk: "Moderate",
             waterNeeds: "Medium",
             soilHealth: 72,
-            overall: "80",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 0,
         },
         {
             id: 4,
             name: "Wheat Paddies",
             status: "Moderate",
+            location: "Chennai",
+            frostRisk: "Low",
             waterNeeds: "High",
             soilHealth: 40,
-            overall: "88",
-            lastUpdated: Date.now()
+            lastUpdated: new Date(),
+            newInsights: 5,
         },
     ];
-
-    const getBarColor = (value: string) => {
-        const num = parseInt(value, 10);
-        if (num >= 80) return "#00A651";
-        if (num >= 60) return "#FFC107";
-        return "#FF3B30";
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "Good":
-                return "#00A651";
-            case "Moderate":
-                return "#FFC107";
-            case "Needs Attention":
-                return "#FF3B30";
-            default:
-                return "#888";
-        }
-    };
 
     return (
         <div style={styles.container}>
@@ -72,8 +60,6 @@ const AllProjects: React.FC = () => {
                     <ProjectCard
                         key={project.id}
                         {...project}
-                        getStatusColor={getStatusColor}
-                        getBarColor={getBarColor}
                     />
                 ))}
             </div>
@@ -98,7 +84,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         overflowY: 'auto',
     },
     title: {
-        fontSize: '22px',
+        fontSize: '28px',
         fontWeight: 700,
         marginBottom: '16px',
         fontFamily: 'Poppins, sans-serif',

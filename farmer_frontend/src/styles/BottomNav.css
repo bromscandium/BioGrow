@@ -21,8 +21,8 @@
 }
 
 .icon {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     margin-bottom: 4px;
     filter: grayscale(100%);
 }
@@ -32,14 +32,16 @@
 }
 
 .label {
-    font-size: 12px;
+    font-size: 14px;
     color: #888;
     font-family: 'Poppins', sans-serif;
 }
 
 .active-label {
     color: #1F3A93;
-    font-weight: 600;
+    font-weight: 800;
+    font-size: 14px;
+
 }
 
 .underline {

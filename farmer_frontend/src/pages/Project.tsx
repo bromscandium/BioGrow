@@ -18,38 +18,33 @@ const Project = () => {
 
     const environmentInsights = [
         {
-            icon: "🌿",
-            title: "Growth Efficiency",
+            title: "🌿 Growth Efficiency",
             description: "Your crop is growing 15% faster than regional average for this time of year."
         },
         {
-            icon: "💧",
-            title: "Water Efficiency",
+            title: "💧 Water Efficiency",
             description: "You're using 20% less water than last season while maintaining excellent crop health."
         },
         {
-            icon: "🌧️",
-            title: "Rainfall Utilization",
+            title: "🌧️ Rainfall Utilization",
             description: "Based on current growth rate, optimal harvest time will be November 25-30."
         },
     ];
 
     const businessInsights = [
         {
-            icon: "📈",
-            title: "Market Trends",
+            title: "📈 Market Trends",
             description: "Market prices for Cotton are projected to rise 8% by harvest time."
         },
         {
-            icon: "💹",
-            title: "Cost Efficiency",
+            title: "💹 Cost Efficiency",
             description: "Your operational costs are 10% lower than regional competitors."
         },
     ];
 
     const protectionInsights = [
-        {icon: "🦠", title: "Pest Risk", description: "Slightly increased risk of aphids due to mild weather."},
-        {icon: "🛡️", title: "Crop Shield", description: "Biological protection recommended for next week."},
+        {title: "🦠 Pest Risk", description: "Slightly increased risk of aphids due to mild weather."},
+        {title: "🛡️ Crop Shield", description: "Biological protection recommended for next week."},
     ];
 
     const getCurrentInsights = () => {
@@ -109,8 +104,7 @@ const Project = () => {
 
     const recommendationData = {
         header: {
-            icon: '🌿',
-            title: 'Stress Buster',
+            title: '🌿 Stress Buster',
             subtitle: 'Anti-Stress & Growth Activator',
         },
         description: 'A bio-stimulant that helps plants tolerate and recover from abiotic stress (cold, heat, drought, wounding), preserving yield.',
@@ -192,6 +186,7 @@ const Project = () => {
                 {/*Biological Product Recommendations*/}
                 <section style={styles.section}>
                     <h3 style={styles.sectionTitle}>Biological Product Recommendations</h3>
+                    <p style={styles.sectionSubtitle}>Based on your latest data, we recommend the following for you:</p>
                     <RecommendationCard
                         data={recommendationData}
                     />
@@ -220,18 +215,34 @@ const styles: { [key: string]: React.CSSProperties } = {
         flex: 1,
     },
     section: {marginBottom: '20px'},
-    sectionTitle: {fontSize: '22px', marginBottom: '12px', color: '#000', fontWeight: 600, fontFamily: 'Poppins'},
-    tabContainer: {display: 'flex', gap: '8px', marginBottom: '12px'},
+    sectionTitle: {
+        fontSize: 28,
+        fontWeight: 700,
+        marginBottom: 12,
+        marginTop: 44,
+        marginLeft: 16,
+        fontFamily: 'Poppins, sans-serif',
+    },
+    sectionSubtitle: {
+        fontSize: 16,
+        color: '#555',
+        fontFamily: 'Poppins',
+        marginBottom: 16,
+        marginLeft: 16,
+        marginTop: -4,
+        lineHeight: 1.4,
+    },
+    tabContainer: {display: 'flex', gap: '8px', marginBottom: '20px'},
     tab: {
         flex: 1,
         textAlign: 'center',
-        padding: '10px 0',
+        padding: '12px 2px',
         borderRadius: '999px',
         border: '1px solid #ccc',
         cursor: 'pointer',
         backgroundColor: '#fff',
         fontWeight: 600,
-        fontSize: '15px',
+        fontSize: '18px',
         transition: 'all 0.3s ease',
         fontFamily: 'Poppins',
         color: '#000',
@@ -249,8 +260,4 @@ const styles: { [key: string]: React.CSSProperties } = {
         marginBottom: '12px',
         boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
     },
-    row: {display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px'},
-    icon: {fontSize: '20px'},
-    title: {fontSize: '18px', fontWeight: 700, color: '#000', fontFamily: 'Poppins'},
-    description: {fontSize: '14px', color: '#333', fontFamily: 'Poppins'}
 };

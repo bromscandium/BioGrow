@@ -1,21 +1,34 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+}
+
 .header-container {
     background: #fff;
     z-index: 999;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
+    width: 100%;
 }
 
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 16px;
+    padding: 8px;
+    position: relative;
 }
 
 .logo {
-    font-size: 20px;
+    font-size: 26px;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    color: #1F3A93;
+    background: linear-gradient(45deg, #ED3BAB, #EB8200);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    position: relative;
 }

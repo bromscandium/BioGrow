@@ -53,10 +53,10 @@ const HealthCard: React.FC<HealthCardProps> = ({
             <div style={styles.headerRow}>
                 <div style={styles.statusLocationWrapper}>
                     <span style={{...styles.statusBadge, backgroundColor: getStatusColor(status)}}>{status}</span>
-                    <span style={styles.locationBadge}>{location}</span>
+                    <span style={styles.locationBadge}>📍{location}</span>
                 </div>
                 <div style={styles.actionsWrapper}>
-                    <span style={{fontSize: 16, fontWeight: 600, color: isPrivate ? '#FF5252' : '#3F51B5'}}>
+                    <span style={{fontSize: 18, fontWeight: 600, color: isPrivate ? '#FF5252' : '#3F51B5'}}>
                         {isPrivate ? "Private" : "Public"}
                     </span>
                     <div
@@ -64,7 +64,7 @@ const HealthCard: React.FC<HealthCardProps> = ({
                         onClick={() => setIsPrivate(!isPrivate)}>
                         <div style={{
                             ...styles.toggleCircle,
-                            marginLeft: isPrivate ? '24px' : '2px'
+                            marginLeft: isPrivate ? '34px' : '2px'
                         }}></div>
                     </div>
                     <button
@@ -78,7 +78,7 @@ const HealthCard: React.FC<HealthCardProps> = ({
                             alignItems: 'center'
                         }}
                     >
-                        <img src={"/assets/img.png"} alt="icon" style={{ width: 22, height: 22 }} />
+                        <img src={"/assets/img.png"} alt="icon" style={{width: 30, height: 30}}/>
                     </button>
                 </div>
             </div>
@@ -96,15 +96,15 @@ const HealthCard: React.FC<HealthCardProps> = ({
 
             <div style={styles.statsContainer}>
                 <div style={styles.metricBox}>
-                    <span style={styles.metricLabel}>❄️ Frost Risk</span>
+                    <span style={styles.metricLabel}>Frost Risk</span>
                     <span style={styles.metricValue}>{frostRisk}</span>
                 </div>
                 <div style={styles.metricBox}>
-                    <span style={styles.metricLabel}>💧 Water Needs</span>
+                    <span style={styles.metricLabel}>Water Needs</span>
                     <span style={styles.metricValue}>{waterNeeds}</span>
                 </div>
                 <div style={styles.metricBox}>
-                    <span style={styles.metricLabel}>🌱 Soil Health</span>
+                    <span style={styles.metricLabel}>Soil Health</span>
                     <span style={styles.metricValue}>{soilHealth}%</span>
                 </div>
             </div>
@@ -144,9 +144,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
     },
     statusBadge: {
-        fontSize: 14,
+        fontSize: 18,
         color: '#fff',
-        padding: '8px 8px',
+        padding: '8px 12px',
         borderRadius: 9999,
         fontWeight: 600,
         textTransform: 'capitalize',
@@ -154,10 +154,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         textAlign: 'center',
     },
     locationBadge: {
-        fontSize: 14,
+        fontSize: 18,
         color: '#333',
-        backgroundColor: '#f0f0f0',
-        padding: '8px 8px',
+        padding: '8px 0px',
         borderRadius: 9999,
         fontWeight: 500,
         minWidth: 80,
@@ -169,7 +168,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         gap: 12,
     },
     toggleWrapper: {
-        width: 50,
+        width: 60,
         height: 30,
         borderRadius: 9999,
         display: 'flex',
@@ -200,26 +199,32 @@ const styles: { [key: string]: React.CSSProperties } = {
         gap: 4,
     },
     cardTitle: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 700,
-        marginBottom: 6,
+        marginBottom: 12,
+        marginTop: 36,
         fontFamily: 'Poppins, sans-serif',
     },
     healthRow: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 4,
+        marginBottom: 12,
+    },
+    sub: {
+        fontSize: 20,
+        color: '#666',
+        fontFamily: 'Poppins, sans-serif',
     },
     numberOverall: {
-        fontSize: 18,
+        fontSize: 28,
         color: '#1F3A93',
         fontWeight: 700,
         fontFamily: 'Poppins, sans-serif',
     },
     barContainer: {
         width: '100%',
-        height: 8,
+        height: 10,
         backgroundColor: '#E0E0E0',
         borderRadius: 4,
         overflow: 'hidden',
@@ -232,45 +237,41 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     statsContainer: {
         display: 'flex',
-        gap: 8,
-        marginBottom: 12,
+        gap: 14,
+        marginBottom: 14,
     },
     metricBox: {
+        padding: 14,
         flex: 1,
-        padding: 8,
         backgroundColor: '#f0f0f0',
         borderRadius: 8,
         textAlign: 'center',
         fontFamily: 'Poppins, sans-serif',
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
+        gap: 2,
     },
     metricLabel: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#555',
         fontWeight: 500,
     },
     metricValue: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 600,
         color: '#1F3A93',
     },
     dateContainer: {
         display: 'flex',
         flexDirection: 'column',
-        gap: 8,
+        gap: 14,
     },
     dateBox: {
         backgroundColor: '#f0f0f0',
         padding: 8,
         borderRadius: 8,
-        fontSize: 15,
+        fontSize: 18,
         fontFamily: 'Poppins, sans-serif',
     },
-    sub: {
-        fontSize: 16,
-        color: '#666',
-        fontFamily: 'Poppins, sans-serif',
-    },
+
 };
