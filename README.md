@@ -53,7 +53,8 @@ Our project leverages the following modern technologies to ensure scalability, e
 *Why it's great:*  
 - Known for its reliability, robustness, and advanced SQL support.  
 - Scales well for complex queries and large datasets.
-
+  
+![image](https://github.com/user-attachments/assets/4e9c1d5b-f765-4c2e-9552-c55d50cfd4a4)
 ## Getting Started
 
 To run the project, simply build and start the application using Docker Compose:
