@@ -1,5 +1,16 @@
 # Welcome to Our Beautiful Team: Valli 🚜🌾
 
+## Purposeful Hacking
+Before eating, some indians might say Annadata sukhi bhava: “Those who are providing me with this food, let them be happy'. But in India, the situation is currently not that simple for farmers. 
+
+Valli, our solution, aims to put the farmers at the center, and empower them to make better decisions. No need to understand what technology to use: just grab your phone and start talking. Insights, Community, and even Loans will be presented to you in an educational, nudging way. 
+
+Because if they're happy, we all are. So we invite you to join us tackling the food crisis in the long-run, one farmer at a time. 
+
+We're passionate about this because our teammate's father has been dedicating his entire life to agriculture for that same purpose, and inspired the now 27 year old hacker to seek a meaningful life with purpose, by going where people need us to be: for him? 
+
+That’s what led us to these 36h: the culmination of our tribute to the world’s Aannadata's, from India, to Ukraine.
+
 Welcome to Valli! Our solution enables you to unlock insights from your data in the world of farming and agriculture effortlessly.
 ![Screenshot 2025-03-21 041151](https://github.com/user-attachments/assets/be225eb4-0a5b-418a-a854-ec720760284b)
 ## Our Technologies
