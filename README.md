@@ -1,6 +1,6 @@
 # Welcome to Our Beautiful Team: Valli 🚜🌾
 
-Welcome to Anadata! Our solution enables you to unlock insights from your data in the world of farming and agriculture effortlessly.
+Welcome to Valli! Our solution enables you to unlock insights from your data in the world of farming and agriculture effortlessly.
 ![Screenshot 2025-03-21 041151](https://github.com/user-attachments/assets/be225eb4-0a5b-418a-a854-ec720760284b)
 ## Our Technologies
 
