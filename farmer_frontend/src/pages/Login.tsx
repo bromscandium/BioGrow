@@ -10,29 +10,32 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div style={styles.container}>
+        <div>
             <Header/>
-            <div style={styles.card}>
-                <h1 style={styles.title}>Welcome Back</h1>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={styles.input}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={styles.input}
-                />
-                <button style={styles.button} onClick={handleLogin}>
-                    Log In
-                </button>
+            <div style={styles.container}>
+                <div style={styles.card}>
+                    <h1 style={styles.title}>Welcome Back</h1>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        style={styles.input}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        style={styles.input}
+                    />
+                    <button style={styles.button} onClick={handleLogin}>
+                        Log In
+                    </button>
+                </div>
             </div>
         </div>
+
     );
 };
 
@@ -43,8 +46,11 @@ const styles: { [key: string]: React.CSSProperties } = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        minHeight: 'calc(100vh - 164px)',
         backgroundColor: '#F5F5F5',
+        padding: '0 16px',
+        boxSizing: 'border-box',
+
     },
     card: {
         width: '100%',
